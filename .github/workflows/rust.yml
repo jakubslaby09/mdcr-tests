@@ -1,19 +1,16 @@
-name: Rust
-
+name: Scrape questions
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "scrape" ]
   pull_request:
-    branches: [ "master" ]
-
+    branches: [ "scrape" ]
 env:
   CARGO_TERM_COLOR: always
-
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write
     steps:
     - uses: actions/checkout@v3
     - name: Build
