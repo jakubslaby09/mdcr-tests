@@ -26,10 +26,10 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         MESSAGE: "Nahrát získané otázky"
     - name: Tag
-      run: git fetch origin main && git checkout main && git tag -f $(date +'%d.%m.%Y') && git push -f --tags
+      run: echo "TAG=$(date +'%d.%m.%Y')" >> $GITHUB_ENV && git fetch origin main && git checkout main && git tag -f $(date +'%d.%m.%Y') && git push -f --tags
     - name: Release
       uses: ncipollo/release-action@v1
       with:
         artifacts: "scrape.*"
-        tag: $(date +'%d.%m.%Y')
-        body: "Otázky získané dne $(date +'%d. %m. %Y'). Toto není datum poslední úpravy otázek MDČR, ale pokud je starší, soubory s otázkami jsou zastaralé."
+        tag: ${{ env.TAG }}
+        body: "Otázky získané dne ${{ env.TAG }}. Toto není datum poslední úpravy otázek MDČR, ale pokud je starší, soubory s otázkami jsou zastaralé."
