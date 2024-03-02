@@ -31,4 +31,5 @@ jobs:
       uses: ncipollo/release-action@v1
       with:
         artifacts: "scrape.*"
+        tag: $(date +'%d.%m.%Y')
         body: "Otázky získané dne $(date +'%d. %m. %Y'). Toto není datum poslední úpravy otázek MDČR, ale pokud je starší, soubory s otázkami jsou zastaralé."
