@@ -82,7 +82,7 @@ fn parse_question(element: ElementRef) -> Result<Question, String> {
         (answer_element.attr("data-correct").unwrap() == "True",
         answer_element.select(&question_answer_text_selector).nth(0).unwrap().text().collect::<String>())
     ).collect();
-    answers.sort_by_key(|answer| Reverse(*answer.0));
+    answers.sort_by_key(|answer| Reverse(answer.0));
 
     Ok(Question {
         question: question_text_element.text().last().unwrap().replace('\n', " ").trim().to_string(),
