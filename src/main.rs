@@ -1,5 +1,6 @@
 use std::{error::Error, fs::File, string::String};
 
+use anyhow::Result;
 use reqwest::blocking::Client;
 use scraper::{selectable::Selectable, ElementRef, Html, Selector};
 use serde::Serialize;
@@ -46,7 +47,7 @@ fn main() {
     eprintln!("done");
 }
 
-fn parse_page(client: &Client, page: usize, output_html: &mut File) -> Result<Option<Vec<Question>>, Box<dyn Error>> {
+fn parse_page(client: &Client, page: usize, output_html: &mut File) -> Result<Option<Vec<Question>>> {
     let res = client.post(URL)
     .body(format!("page={page}"))
     .header("content-type", "application/x-www-form-urlencoded")
