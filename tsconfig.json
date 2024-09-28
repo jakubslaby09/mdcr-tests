@@ -6,7 +6,7 @@
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "checkJs": true,
-    "outFile": null,
+    "noEmit": true,
   },
   "include": ["main.js"],
 }

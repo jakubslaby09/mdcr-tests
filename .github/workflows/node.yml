@@ -11,6 +11,8 @@ jobs:
       contents: write
     steps:
     - uses: actions/checkout@v3
+    - name: Check with TSC
+      run: npx tsc
     - name: Run
       run: mkdir out && cd out && node ..
     - name: Upload results
