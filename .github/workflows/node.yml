@@ -1,0 +1,31 @@
+name: Scrape questions with puppeteer
+on:
+  push:
+    branches: [ "scrape" ]
+  pull_request:
+    branches: [ "scrape" ]
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v3
+    - name: Run
+      run: mkdir out && cd out && node ..
+    - name: Upload results
+      uses: s0/git-publish-subdir-action@develop
+      env:
+        REPO: self
+        BRANCH: main
+        FOLDER: out
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        MESSAGE: "Nahrát získané otázky"
+    - name: Tag
+      run: echo "TAG=$(date +'%d.%m.%Y')" >> $GITHUB_ENV && git fetch origin main && git checkout main && git tag -f $(date +'%d.%m.%Y') && git push -f --tags
+    - name: Release
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "scrape.*"
+        tag: ${{ env.TAG }}
+        body: "Otázky získané dne ${{ env.TAG }}. Toto není datum poslední úpravy otázek MDČR, ale pokud je starší, soubory s otázkami jsou zastaralé. Odpovědi ve sloupci D (první sloupec s odpověďmi) jsou správné."
