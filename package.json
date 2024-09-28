@@ -1,0 +1,14 @@
+{
+  "name": "mdcr-tests",
+  "version": "1.0.0",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "cleanup": "rm scrape.*.csv screenshots/ assets/ -r"
+  },
+  "author": "Jakub Slabý",
+  "dependencies": {
+    "csv-stringify": "^6.5.1",
+    "puppeteer": "^23.4.1"
+  }
+}
