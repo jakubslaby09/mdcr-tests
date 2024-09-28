@@ -103,7 +103,8 @@ for (const section of sections) {
             frame.style.display = "table";
         });
         const screenshotPath = `./screenshots/${res.Code}.png`;
-        const question = await window.evaluate((res, screenshotPath, assets, baseUrl) => {
+        // TODO: move most of the logic outside the evaluated callback
+        const question = await window.evaluate((res, screenshotPath, assets, baseUrl, answerPrefixes) => {
             const answers = [...document.querySelectorAll(".answer-container > .answer")]
             .map((e, i) => /** @type {[Element, number]} */([e, i]))
             .sort(([a, _], [b, __]) => {
@@ -121,11 +122,6 @@ for (const section of sections) {
             } else {
                 mediaSrc = screenshotPath;
             }
-            // const mediaSrc = frameElements.length == 1
-            // ? frameElements[0]?.getAttribute("src")
-            //     ?? videoSource?.getAttribute("src")
-            //     ?? null
-            // : screenshotPath;
 
             /** @type {Question} */
             return ({
@@ -139,7 +135,7 @@ for (const section of sections) {
                 firstWrong: answers[1] ?? undefined,
                 secondWrong: answers[2] ?? undefined,
             });
-        }, res, screenshotPath, assets, baseUrl);
+        }, res, screenshotPath, assets, baseUrl, answerPrefixes);
         if(question.media == screenshotPath) {
             stdout.write(`screenshotting ${screenshotPath} \x1B[0K`);
             await mkdir(`./screenshots`, { recursive: true, });
