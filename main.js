@@ -11,6 +11,8 @@ const window = await browser.newPage();
 /** @type {{[key: string]: string}} */
 const assets = {};
 const baseUrl = "https://etesty2.mdcr.cz";
+/** @const @type {[string, string, string]} */
+const answerPrefixes = ["A: ", "B: ", "C: "];
 window.on('response', async res => {
     if(res.request().method().toLowerCase() != "get") {
         return;
@@ -22,7 +24,7 @@ window.on('response', async res => {
     }
     stdout.write(`downloading asset ${path} \x1B[0K`);
     const mime = res.headers()['content-type'];
-    /**@type { string } */
+    /** @type { string } */
     let extension;
     switch (mime) {
         case undefined:
@@ -102,10 +104,13 @@ for (const section of sections) {
         });
         const screenshotPath = `./screenshots/${res.Code}.png`;
         const question = await window.evaluate((res, screenshotPath, assets, baseUrl) => {
-            const answers = [...document.querySelectorAll(".answer-container > .answer")].sort((a, b) => {
+            const answers = [...document.querySelectorAll(".answer-container > .answer")]
+            .map((e, i) => /** @type {[Element, number]} */([e, i]))
+            .sort(([a, _], [b, __]) => {
                 return (b.getAttribute("data-answerid") == res.CorrectAnswers[0]?.toString() ? 1 : 0)
                 - (a.getAttribute("data-answerid") == res.CorrectAnswers[0]?.toString() ? 1 : 0);
-            }).map(e => e.querySelector("p")?.textContent?.trim());
+            })
+            .map(([e, i]) => (answerPrefixes[i] ?? "") + e.querySelector("p")?.textContent?.trim());
 
             const frameElements = document.querySelectorAll("div.image-frame > *");
             const videoSource = document.querySelector("div.image-frame > video > source");
