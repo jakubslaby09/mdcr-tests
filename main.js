@@ -164,13 +164,29 @@ for (const section of sections) {
 await browser.close();
 console.log(`done`);
 
-/** @typedef {{id: number,
- * code: string,
- * name: string,
- * media?: string,
- * answer: string,
- * firstWrong?: string,
- * secondWrong?: string
- * }} Question */
-/** @typedef {{Questions: {QuestionID: number, Code: string, CorrectAnswers: number[]}[]}} QuestionsRes */
-/** @typedef {{name: string, id: string}} Section */
+/** 
+ * @typedef {{
+ *  id: number,
+ *  code: string,
+ *  name: string,
+ *  media?: string,
+ *  answer: string,
+ *  firstWrong?: string,
+ *  secondWrong?: string,
+* }} Question
+ */
+/**
+ * @typedef {{
+ *  Questions: {
+ *      QuestionID: number,
+ *      Code: string,
+ *      CorrectAnswers: number[]
+ *  }[],
+ * }} QuestionsRes
+ */
+/**
+ * @typedef {{
+ *  name: string,
+ *  id: string
+ * }} Section
+ */
