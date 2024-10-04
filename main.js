@@ -125,7 +125,7 @@ for (const section of sections) {
 
             /** @type {Question} */
             return ({
-                name: [...document.querySelectorAll(".question-text")]
+                title: [...document.querySelectorAll(".question-text")]
                     .find(e => e.textContent?.trim() != "")
                     ?.textContent?.trim() ?? (()=>{throw ""})(),
                 code: res.Code,
@@ -147,14 +147,16 @@ for (const section of sections) {
     }
     const csvName = `./scrape.${section.id}.${section.name.slice(0, 50).replaceAll("/", "-")}.csv`;
     await writeFile(csvName, stringify(questions, {
+        header: true,
+        /** @type {(keyof Question)[]} */
         columns: [
             "id",
             "code",
-            "name",
+            "title",
+            "media",
             "answer",
             "firstWrong",
             "secondWrong",
-            "media",
         ],
     }), {
         flag: "w+",
@@ -168,7 +170,7 @@ console.log(`done`);
  * @typedef {{
  *  id: number,
  *  code: string,
- *  name: string,
+ *  title: string,
  *  media?: string,
  *  answer: string,
  *  firstWrong?: string,
