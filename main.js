@@ -41,18 +41,26 @@ window.on('response', async res => {
             console.error(`unknown content-type: ${mime}`);
             extension = mime.replaceAll("/", ".");
     }
-    try {
-        var buf = await res.buffer();
-    } catch (error) {
-        if(error instanceof ProtocolError) {
-            console.error(`couldn't get body: ${error.name}:\n    ${error.message}`);
-        } else {
-            console.error(error);
-        }
-        return;
-    }
     assets[url] = `./assets/${path.slice("/Content/ImageQuestion/".length).replaceAll("/", "-")}.${extension}`;
     await mkdir(`./assets`, { recursive: true });
+    try {
+        /** @type {Buffer | ReadableStream<Uint8Array>} */
+        var buf = await res.buffer();
+    } catch (firstError) {
+        try {
+            buf = (await (await fetch(url)).blob()).stream();
+        } catch (secondError) {
+            console.error(`  couldn't get ${path}:`);
+            if(firstError instanceof ProtocolError) {
+                console.error(`    first attempt: ${firstError.name}:\n      ${firstError.message}`);
+            } else {
+                console.error(`    first attempt: ${firstError}`);
+            }
+            console.error(`    second attempt using Node's fetch: ${secondError}`);
+            assets[url] = url;
+            return;
+        }
+    }
     await writeFile(assets[url], buf);
 });
 
@@ -163,6 +171,9 @@ for (const section of sections) {
     });
     console.log(`\r  ${questionResponses.Questions.length} questions written to ${csvName} \x1B[0K`);
 }
+await window.close({
+    runBeforeUnload: true,
+});
 await browser.close();
 console.log(`done`);
 
