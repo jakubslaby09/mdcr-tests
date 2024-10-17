@@ -8,7 +8,7 @@ const browser = await puppeteer.launch({
 });
 
 const window = await browser.newPage();
-/** @type {{[key: string]: string}} */
+/** @type {{[url: string]: string}} */
 const assets = {};
 const baseUrl = "https://etesty2.mdcr.cz";
 /** @const @type {[string, string, string]} */
@@ -128,6 +128,9 @@ for (const section of sections) {
                 const src = (frameElements[0] ?? videoSource)?.getAttribute("src");
                 mediaSrc = src == null ? null : new URL(src, baseUrl).href;
             } else {
+                if(videoSource) {
+                    console.log("warning: screenrecording not implemented! screenshotting instead");
+                }
                 mediaSrc = screenshotPath;
             }
 
@@ -174,6 +177,7 @@ for (const section of sections) {
 await window.close({
     runBeforeUnload: true,
 });
+console.log(`waiting for downloads to finish`);
 await browser.close();
 console.log(`done`);
 
